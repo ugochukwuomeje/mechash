@@ -1,5 +1,6 @@
 package com.ugo.mecash_multicurrency_wallet.config;
 
+import com.ugo.mecash_multicurrency_wallet.service.UserDetailsImp;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,12 +14,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
+@Component
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
@@ -30,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        log.info("=================================== request received by the seconda filter");
+        log.info("=================================== request received by the second filter");
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String email;
@@ -43,10 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
 
         try {
-            email = jwtService.extractAccessTokenUsername(jwt);
+            email = jwtService.extractAccessTokenEmail(jwt);
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+                log.info("Extracted email" + email);
+                UserDetailsImp userDetails = (UserDetailsImp) this.userDetailsService.loadUserByUsername(email);
 
                 if (jwtService.isAccessTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

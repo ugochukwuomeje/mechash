@@ -10,5 +10,6 @@ public class WalletRequest {
     private String currencyCode;
     private BigDecimal amount;
     private Long recipientWalletId;
+    private boolean externalDeposit;
 
 }

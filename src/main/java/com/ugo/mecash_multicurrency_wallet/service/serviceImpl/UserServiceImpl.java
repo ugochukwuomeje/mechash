@@ -5,8 +5,10 @@ import com.ugo.mecash_multicurrency_wallet.dto.request.RefToken;
 import com.ugo.mecash_multicurrency_wallet.dto.request.UserRequest;
 import com.ugo.mecash_multicurrency_wallet.dto.response.LoginResponse;
 import com.ugo.mecash_multicurrency_wallet.dto.response.UserResponse;
+import com.ugo.mecash_multicurrency_wallet.entity.Role;
 import com.ugo.mecash_multicurrency_wallet.entity.User;
 import com.ugo.mecash_multicurrency_wallet.enums.ResponseMessage;
+import com.ugo.mecash_multicurrency_wallet.repository.RoleRepository;
 import com.ugo.mecash_multicurrency_wallet.repository.UserRepository;
 import com.ugo.mecash_multicurrency_wallet.service.UserDetailsImp;
 import com.ugo.mecash_multicurrency_wallet.service.UserService;
@@ -37,7 +39,9 @@ public class UserServiceImpl implements UserService {
     private JwtService jwtService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    private LoginResponse loginResponse;
+    private final LoginResponse loginResponse;
+    @Autowired
+    private RoleRepository roleRepository;
 
 
     public UserServiceImpl(AuthenticationManager authenticationManager, LoginResponse loginResponse) {
@@ -46,9 +50,89 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse registerUser(UserRequest request) {
+    public UserResponse registerUser(UserRequest userRequest) {
+        UserResponse response = new UserResponse();
+
+        try {
+            ////////////////////////////////// Check if a user with the provided email already exists
+            if (userRepository.findUserByEmail(userRequest.getEmail())) {
+                response.setMessage(ResponseMessage.EMAIL_ALREADY_EXIST.getStatusCode());
+                return response;
+            }
+
+            ////////////////////////////////// Check if a user with the provided username already exists
+            if (userRepository.findByUserName(userRequest.getUserName())) {
+                response.setMessage(ResponseMessage.USERNAME_ALREADY_EXIST.getStatusCode());
+                return response;
+            }
+
+            ///////////////////////////////////// Create a new User object
+            User user = new User();
+            user.setFirstName(userRequest.getFirstName());
+            user.setLastName(userRequest.getLastName());
+            user.setUserName(userRequest.getUserName());
+            user.setEmail(userRequest.getEmail());
+            user.setPassword(userRequest.getPassword());
+
+            String roleName = userRequest.getRole();
+            Role role = roleRepository.findByRoleName(roleName);
+            if (role == null) {
+                response.setMessage("Role with name \"" + roleName + "\" does not exist.");
+                return response;
+            }
+            user.setRole(role);
+
+            ///////////////////////////////////// Generate a default password for the user
+          //  String defaultPassword = generateRandomPassword(8);
+            String defaultPassword = userRequest.getPassword();
+            user.setPassword(passwordEncoder.encode(defaultPassword));
+
+            ///////////////////////////////// Save the user and flush
+            User savedUser = userRepository.saveAndFlush(user);
+
+            //////////////////////////////////////////// Convert the saved user to a response DTO
+         //   UserResponse response = new UserResponse();
+         //   response = convertToDTO(savedUser);
+
+            response.setId(savedUser.getId());
+            response.setEmail(savedUser.getEmail());
+            response.setUserName(savedUser.getUserName());
+            response.setFirstName(savedUser.getFirstName());
+            response.setLastName(savedUser.getLastName());
+            response.setRole(savedUser.getRole().getRoleName());
+            response.setMessage("User registered successfully");
+
+        } catch (Exception e) {
+            log.error("Error during user registration: {}", e.getMessage(), e);
+            response.setMessage(ResponseMessage.REGISTRATION_ERROR.getStatusCode());
+        }
+
+        return response;
+    }
+
+
+    private UserResponse convertToDTO(User user) {
+        UserResponse userResponse = new UserResponse();
+
+        userResponse.setId(user.getId());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        userResponse.setUserName(user.getUserName());
+        log.info("username picked from DB:" + user.getUserName());
+        userResponse.setEmail(user.getEmail());
+
+        if (user.getRole() != null) {
+            userResponse.setRole(user.getRole().getRoleName());
+        } else {
+            log.warn("User with ID " + user.getId() + " has no role assigned");
+        }
+        return userResponse;
+    }
+
+    private String generateRandomPassword(int i) {
         return null;
     }
+
 
     @Override
     public LoginResponse loginUser(UserRequest request, HttpServletResponse httpServletResponse) {
@@ -63,12 +147,12 @@ public class UserServiceImpl implements UserService {
         } catch (BadCredentialsException e) {
             log.error("Invalid username or password for user: {}", request.getEmail());
             return LoginResponse.builder()
-                    .message(ResponseMessage.INCORRECT_USERNAME_OR_PASSWORD.getStatusCode())
+                    .message(ResponseMessage.INVALID_CREDENTIALS.getStatusCode())
                     .build();
         } catch (InternalAuthenticationServiceException e) {
             log.error("Failed to load userDetails, Internal server error during authentication for user: {}", request.getEmail(), e);
             return LoginResponse.builder()
-                    .message(ResponseMessage.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .message(ResponseMessage.INTERNAL_SERVER_ERROR_DUE_TO_AUTHENTICATION.getStatusCode())
                     .build();
         } catch (Exception e) {
             log.error("Unexpected error during authentication for user: {}", request.getEmail(), e);
@@ -80,13 +164,13 @@ public class UserServiceImpl implements UserService {
         UserDetailsImp userDetails = (UserDetailsImp) authentication.getPrincipal();
         User user = userDetails.getUser();
 
-        if (passwordEncoder.matches("Password", user.getPassword())) {
-            log.info("User {} is logging in for the first time and needs to change their password.", user.getEmail());
-            return LoginResponse.builder()
-                    .message("Please change your password.")
-                    .firstTimeLogin(true)
-                    .build();
-        }
+//        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+//            log.info("User {} is logging in for the first time and needs to change their password.", user.getEmail());
+//            return LoginResponse.builder()
+//                    .message("Please change your password.")
+//                    .firstTimeLogin(true)
+//                    .build();
+//        }
 
         log.info("############# Log before generating token ##################");
 
@@ -122,20 +206,22 @@ public class UserServiceImpl implements UserService {
         return refreshTokenCookie;
     }
 
+    @Override
     public Object getAccessTokenUsingRefreshToken(RefToken refToken) {
         try {
             String refreshToken = refToken.getRefreshToken();
 
             log.info("Refresh Token: service(1) {}", refreshToken);
             if (refreshToken == null || refreshToken.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Refresh token is missing or empty");
+                log.error("Refresh token is missing or empty");
+                LoginResponse.builder().message(ResponseMessage.BAD_REQUEST.getStatusCode());
             }
 
             log.info("Refresh token not null/empty: {}", refreshToken);
-            String userName = jwtService.extractRefreshTokenUsername(refreshToken);
-            log.info("Extracted Refresh token username: {}", userName);
+            String email = jwtService.extractRefreshTokenEmail(refreshToken);
+            log.info("Extracted Refresh token username: {}", email);
 
-            User users = userRepository.findByEmail(userName)
+            User users = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
             UserDetailsImp userDetails = new UserDetailsImp(users);

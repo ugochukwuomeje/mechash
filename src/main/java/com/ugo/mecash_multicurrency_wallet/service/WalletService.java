@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
 public interface WalletService {
-    WalletResponse depositMoney(WalletRequest walletRequest);
-    WalletResponse withdrawMoney(WalletRequest walletRequest);
-    WalletResponse transferMoney(WalletRequest walletRequest);
+    WalletResponse depositMoney(WalletRequest walletRequest, Authentication authentication);
+    WalletResponse withdrawMoney(WalletRequest walletRequest, Authentication authentication);
+    WalletResponse transferMoney(WalletRequest walletRequest, Authentication authentication);
     WalletResponse getBalance(WalletRequest walletRequest, Authentication authentication);
 }
 

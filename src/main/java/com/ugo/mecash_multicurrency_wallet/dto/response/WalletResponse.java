@@ -12,9 +12,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class WalletResponse {
     private User user;
+    private Long userId;
     private String currencyCode;
     private BigDecimal balance;
-    private BigDecimal receiverWallet;
+    private Long recipientWalletId;
     private String transactionReference;
     private String responseMessage;
     private int responseCode;

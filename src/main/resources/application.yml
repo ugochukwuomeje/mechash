@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: mecash-multicurrency-wallet
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/mecash_wallet?useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      show-sql: true
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+
+server:
+  port: 6060
+
+
+mecash:
+  jwt:
+    refresh_token_secret_key: 51655468576D5A7134743777217A25432A462D4A614E635266556A586E327235
+    access_token_secret_key: 51655468576D5A7134743777217A25432A462D4A614E635266556A586E327235

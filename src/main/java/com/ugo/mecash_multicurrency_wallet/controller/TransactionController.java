@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/api")
 public class TransactionController {
     @Autowired
     private TransactionService transactionService;
-    @GetMapping("/{userId}/{currencyCode}")
+    @GetMapping("/history")
     public ResponseEntity<List<TransactionResponse>> getTransactionHistory(
             @ModelAttribute WalletRequest walletRequest,
             @RequestParam int pageNumber,

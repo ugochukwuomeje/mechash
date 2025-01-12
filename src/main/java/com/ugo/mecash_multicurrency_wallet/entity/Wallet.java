@@ -36,7 +36,7 @@ public class Wallet {
     private Integer maxTransactionsPerDay;
 
     public BigDecimal getMaxBalance() {
-        return BigDecimal.valueOf(10000);
+        return BigDecimal.valueOf(1000000);
     }
 
     public Integer getMaxTransactionsPerDay() {

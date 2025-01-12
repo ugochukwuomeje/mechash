@@ -76,7 +76,7 @@ public class AppConfig {
                     auth.requestMatchers("/login", "/logout", "*/refresh-token").permitAll();
 
                     // Role-based access control for user and role management endpoints
-                    auth.requestMatchers("/**").hasAnyAuthority("ADMIN");
+                    auth.requestMatchers("/role/**").hasAnyAuthority("ADMIN");
 
 
                     auth.anyRequest().authenticated();

@@ -11,7 +11,11 @@ import java.util.List;
 public class UserResponse {
     private Long id;
     private String email;
-    private String fullName;
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String role;
     private List<WalletResponse> wallets;
+    private String message;
 }
 
