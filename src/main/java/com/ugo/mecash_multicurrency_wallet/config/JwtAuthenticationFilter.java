@@ -39,6 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String email;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+
+            log.info("===============authentication is not needed");
             filterChain.doFilter(request, response);
             return;
         }

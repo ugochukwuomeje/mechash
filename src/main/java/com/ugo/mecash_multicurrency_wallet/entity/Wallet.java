@@ -25,8 +25,17 @@ public class Wallet {
     @Column(nullable = false)
     private BigDecimal balance;
 
+    @Column(name = "wallet", nullable = false, columnDefinition = "bigint(10)")
+    private Long wallet;
+
     @Column(nullable = false)
      private Boolean isActive;
+
+    @Column(name = "pin", nullable = false, columnDefinition = "varchar(100)")
+    private String pin;
+
+    @Column(name = "pin_attempt", nullable = false, columnDefinition = "int(1)")
+    private int pin_attempt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

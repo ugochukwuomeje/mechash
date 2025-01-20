@@ -147,17 +147,17 @@ public class UserServiceImpl implements UserService {
         } catch (BadCredentialsException e) {
             log.error("Invalid username or password for user: {}", request.getEmail());
             return LoginResponse.builder()
-                    .message(ResponseMessage.INVALID_CREDENTIALS.getStatusCode())
+                    .message(ResponseMessage.INVALID_CREDENTIALS.toString()).responseCode(ResponseMessage.INVALID_CREDENTIALS.getStatusCode())
                     .build();
         } catch (InternalAuthenticationServiceException e) {
             log.error("Failed to load userDetails, Internal server error during authentication for user: {}", request.getEmail(), e);
             return LoginResponse.builder()
-                    .message(ResponseMessage.INTERNAL_SERVER_ERROR_DUE_TO_AUTHENTICATION.getStatusCode())
+                    .message(ResponseMessage.INTERNAL_SERVER_ERROR_DUE_TO_AUTHENTICATION.toString()).responseCode(ResponseMessage.INTERNAL_SERVER_ERROR_DUE_TO_AUTHENTICATION.getStatusCode())
                     .build();
         } catch (Exception e) {
             log.error("Unexpected error during authentication for user: {}", request.getEmail(), e);
             return LoginResponse.builder()
-                    .message(ResponseMessage.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .message(ResponseMessage.INTERNAL_SERVER_ERROR.toString()).responseCode(ResponseMessage.INTERNAL_SERVER_ERROR.getStatusCode())
                     .build();
         }
 

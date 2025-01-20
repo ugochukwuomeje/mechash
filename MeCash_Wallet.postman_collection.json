@@ -1,0 +1,302 @@
+{
+	"info": {
+		"_postman_id": "719b72af-8dae-4c40-9434-b6f55b76c819",
+		"name": "MeCash_Wallet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33689824"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "digitalpassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "samplemail@etz.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:6060/api/login",
+					"host": [
+						"localhost"
+					],
+					"port": "6060",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "digitalpassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "samplemail@etz.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"example@example.com\",\r\n    \"password\": \"password123\",\r\n    \"userName\": \"exampleUser\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"role\": \"USER\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:6060/api/login",
+					"host": [
+						"localhost"
+					],
+					"port": "6060",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Transaction History",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "depositMoney",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJzYW1wbGVfZmlyc3RuYW1lIiwibGFzdE5hbWUiOiJzYW1wbGVfbGFzdG5hbWUiLCJyb2xlIjoiQURNSU4iLCJpZCI6MSwiZW1haWwiOiJzYW1wbGVtYWlsQGV0ei5jb20iLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiQURNSU4ifV0sInVzZXJuYW1lIjoic2FtcGxlX3VzZXJuYW1lIiwic3ViIjoic2FtcGxlbWFpbEBldHouY29tIiwiaWF0IjoxNzM2NzA1NzUwLCJleHAiOjE3MzY3MDc1NTB9.G9zs54yZ_Rmd09ijQj7ga-qwNZuAGssPZfly15NUbnQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 2,\r\n    \"currencyCode\": \"USD\",\r\n    \"amount\": 1500.75,\r\n    \"recipientWalletId\": 67890,\r\n    \"externalDeposit\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:6060/api/wallets/deposit",
+					"host": [
+						"localhost"
+					],
+					"port": "6060",
+					"path": [
+						"api",
+						"wallets",
+						"deposit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "WithdrawMoney",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJzYW1wbGVfZmlyc3RuYW1lIiwibGFzdE5hbWUiOiJzYW1wbGVfbGFzdG5hbWUiLCJyb2xlIjoiQURNSU4iLCJpZCI6MSwiZW1haWwiOiJzYW1wbGVtYWlsQGV0ei5jb20iLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiQURNSU4ifV0sInVzZXJuYW1lIjoic2FtcGxlX3VzZXJuYW1lIiwic3ViIjoic2FtcGxlbWFpbEBldHouY29tIiwiaWF0IjoxNzM2NzE4ODQ1LCJleHAiOjE3MzY3MjA2NDV9.qM890cbl2ABQHDvcMuHx86AdNDFapQf6aLnIthm-AHE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 2,\r\n     \"currencyCode\": \"USD\",\r\n    \"amount\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:6060/api/wallets/withdraw",
+					"host": [
+						"localhost"
+					],
+					"port": "6060",
+					"path": [
+						"api",
+						"wallets",
+						"withdraw"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer Money",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJzYW1wbGVfZmlyc3RuYW1lIiwibGFzdE5hbWUiOiJzYW1wbGVfbGFzdG5hbWUiLCJyb2xlIjoiQURNSU4iLCJpZCI6MSwiZW1haWwiOiJzYW1wbGVtYWlsQGV0ei5jb20iLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiQURNSU4ifV0sInVzZXJuYW1lIjoic2FtcGxlX3VzZXJuYW1lIiwic3ViIjoic2FtcGxlbWFpbEBldHouY29tIiwiaWF0IjoxNzM2NzIwNzc5LCJleHAiOjE3MzY3MjI1Nzl9.liiHBSMviem3C6UXV01FgVf6zTNR1VZ09gnoHIb9Qs0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   // \"userId\": 2,\r\n    \"currencyCode\": \"USD\",\r\n    \"amount\": 1500.75,\r\n    \"recipientWalletId\": 2,\r\n    \"externalDeposit\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:6060/api/wallets/transfer",
+					"host": [
+						"localhost"
+					],
+					"port": "6060",
+					"path": [
+						"api",
+						"wallets",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Balance",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJzYW1wbGVfZmlyc3RuYW1lIiwibGFzdE5hbWUiOiJzYW1wbGVfbGFzdG5hbWUiLCJyb2xlIjoiQURNSU4iLCJpZCI6MSwiZW1haWwiOiJzYW1wbGVtYWlsQGV0ei5jb20iLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiQURNSU4ifV0sInVzZXJuYW1lIjoic2FtcGxlX3VzZXJuYW1lIiwic3ViIjoic2FtcGxlbWFpbEBldHouY29tIiwiaWF0IjoxNzM2NzIxNzQwLCJleHAiOjE3MzY3MjM1NDB9._NffXfjjDYdhA4eGiub8kgBm9MfqmWR-a3QKiGBH4dE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"userId\": 2,\r\n   \"currencyCode\": \"USD\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:6060/api/wallets/balance",
+					"host": [
+						"localhost"
+					],
+					"port": "6060",
+					"path": [
+						"api",
+						"wallets",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction History",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJzYW1wbGVfZmlyc3RuYW1lIiwibGFzdE5hbWUiOiJzYW1wbGVfbGFzdG5hbWUiLCJyb2xlIjoiQURNSU4iLCJpZCI6MSwiZW1haWwiOiJzYW1wbGVtYWlsQGV0ei5jb20iLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiQURNSU4ifV0sInVzZXJuYW1lIjoic2FtcGxlX3VzZXJuYW1lIiwic3ViIjoic2FtcGxlbWFpbEBldHouY29tIiwiaWF0IjoxNzM2NzIxNzQwLCJleHAiOjE3MzY3MjM1NDB9._NffXfjjDYdhA4eGiub8kgBm9MfqmWR-a3QKiGBH4dE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"userId\": 2,\r\n   \"currencyCode\": \"USD\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:6060/api/wallets/history",
+					"host": [
+						"localhost"
+					],
+					"port": "6060",
+					"path": [
+						"api",
+						"wallets",
+						"history"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

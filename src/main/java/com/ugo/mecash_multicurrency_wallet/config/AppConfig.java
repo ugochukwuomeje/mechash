@@ -73,12 +73,10 @@ public class AppConfig {
                 .cors(withDefaults())
                 .authorizeHttpRequests(auth -> {
 
-                    auth.requestMatchers("/login", "/logout", "*/refresh-token").permitAll();
+                    auth.requestMatchers("*/login", "*/logout", "*/refresh-token","*/register").permitAll();
 
                     // Role-based access control for user and role management endpoints
                     auth.requestMatchers("/role/**").hasAnyAuthority("ADMIN");
-
-
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
